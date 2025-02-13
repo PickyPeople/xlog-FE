@@ -1,2 +1,2 @@
 <template src="./AppHeaderTemplate.vue"></template>
-<style src="./AppHeaderStyle.css"></style>
+<style src="./AppHeaderStyle.css" scoped></style>
