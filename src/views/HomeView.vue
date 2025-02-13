@@ -1,16 +1,25 @@
 <template>
-  <div class="home-container">
-    <h1>홈 화면</h1>
-    <p>로그인 후 이동하는 페이지입니다.</p>
+  <div>
+    <AppHeader @open-login="isLoginModalOpen = true" />
+    <LoginModal :isOpen="isLoginModalOpen" @close-login="isLoginModalOpen = false" />
+    <main class="content">
+      <h1>블로그 홈 화면</h1>
+      <p>Velog처럼 로그인하지 않아도 볼 수 있는 화면</p>
+    </main>
   </div>
 </template>
 
-<script setup> //기능을 개발하는 곳
+<script setup>
+import { ref } from 'vue';
+import AppHeader from '@/components/AppHeader.vue';  
+import LoginModal from '@/components/LoginModal.vue';
+
+const isLoginModalOpen = ref(false);
 </script>
 
-<style scoped> 
-.home-container {
+<style scoped>
+.content {
   text-align: center;
-  padding: 50px;
+  margin-top: 50px;
 }
 </style>
