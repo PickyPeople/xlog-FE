@@ -1,3 +1,4 @@
+/* Velog 스타일의 grid 레이아웃 적용 */
 * {
   margin: 0;
   padding: 0;
@@ -13,10 +14,75 @@
   height: auto;
   margin: 0 auto;
   position: relative;
-  background-color: aliceblue;
+}
+
+span {
+  display: block;
 }
 
 .contentBox {
   width: 100%;
-  height: 700px;
+  height: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  padding: 20px;
+}
+
+.post-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  background-color: #fff;
+  transition: transform 0.1s ease-in-out;
+  will-change: transform;
+}
+
+.post-card:hover {
+  transform: scale(1.1);
+}
+
+.post-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.post-content {
+  padding: 16px;
+}
+
+.post-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.post-sub {
+  font-size: 14px;
+  height: 30px;
+  color: #555;
+  margin-bottom: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.post-footer {
+  display: flex;
+  justify-content: flex-start;
+  font-size: 12px;
+  color: #999;
+}
+
+.post-user {
+  flex-grow: 1;
+}
+.heart {
+  width: 20px;
+  height: 20px;
 }
