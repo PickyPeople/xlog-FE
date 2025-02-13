@@ -1,24 +1,32 @@
-# xlog
+# 課題
+Ruby on RailsとVue.jsを用いたブログプラットフォームを構築していただきます。
 
-## Project setup
-```
-npm install
-```
+# **課題の説明**
+1. ブログ記事の管理
+<ul>
+ <li>記事の投稿、編集、削除機能をRailsで実装。</li>
+ <li>記事にカテゴリやタグを関連付けるリレーションを構築。</li>
+</ul>
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+2.検索・フィルタリング機能
+<ul>
+ <li>Vue.jsを用いて、記事をカテゴリごとにフィルタリングし、検索できる機能を実装。</li>
+</ul>
 
-### Compiles and minifies for production
-```
-npm run build
-```
+3.ユーザー認証機能
+<ul>
+ <li>Railsで簡易的なログイン/ログアウト機能を追加。</li>
+</ul>
 
-### Lints and fixes files
-```
-npm run lint
-```
+4.レスポンシブデザイン
+<ul>
+ <li>フロントエンドでモバイル対応のデザインを適用。</li>
+</ul>
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+5.任意項目（追加要素）
+<ul>
+ <li>単体テストまたはE2Eテストを導入。</li>
+ <li>デプロイ手順のドキュメント化。</li>
+</ul>
+
+# **フォルダーの仕組み**
