@@ -29,13 +29,11 @@ const router = useRouter();
 
 const handleLogin = () => {
   console.log('로그인 시도:', email.value, password.value);
-  // 추후 API 연동
   router.push('/home');
 };
 </script>
 
 <style scoped>
-/* 로그인 페이지 기본 스타일 */
 .login-container {
   display: flex;
   justify-content: center;
