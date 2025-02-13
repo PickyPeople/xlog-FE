@@ -11,7 +11,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import AppHeader from '@/components/AppHeader.vue';  
+import AppHeader from '@/components/AppHeader/AppHeader.vue';  
 import LoginModal from '@/components/LoginModal.vue';
 
 const isLoginModalOpen = ref(false);
