@@ -6,5 +6,7 @@
 </script>
 
 <style>
-/* 전역스타일을 작용하는 곳 */
+ #app {
+  height: 1000px;
+ }
 </style>
