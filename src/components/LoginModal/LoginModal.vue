@@ -1,6 +1,6 @@
 <template>
-  <div class="modal-overlay">
-    <div class="modal-content">
+  <div v-if="isOpen" class="modal-overlay" @click="handleOverlayClick">
+    <div class="modal-content"  @click.stop>
       <h2>Xlog</h2>
       <form action="">
         <div class="input-group">

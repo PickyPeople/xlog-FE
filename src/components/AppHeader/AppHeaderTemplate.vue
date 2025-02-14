@@ -12,7 +12,7 @@
           </li>
         </ul>
         <button v-if="isLoggedIn" class="new-post">새글 작성</button>
-        <button v-if="!isLoggedIn" class="login">로그인</button>
+        <button v-if="!isLoggedIn" class="login" @click="$emit('open-login')">로그인</button>
       </div>
     </div>
   </header>

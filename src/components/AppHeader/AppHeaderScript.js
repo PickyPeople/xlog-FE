@@ -13,6 +13,8 @@ export default {
     const setLoggedIn = () => { isLoggedIn.value = true; };
     const logout = () => { isLoggedIn.value = false; };
 
+    defineEmits; ['open-login']
+
     return { isLoggedIn, navigateHome, setLoggedIn, logout };
   }
 };
