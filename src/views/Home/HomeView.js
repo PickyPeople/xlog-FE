@@ -90,10 +90,6 @@ export default {
     ]
     const isLoginModalOpen = ref(false);
 
-    const closeLoginModal = () => {
-      isLoginModalOpen.value = false;
-    }
-
-    return { isLoginModalOpen, posts, closeLoginModal };
+    return { isLoginModalOpen, posts };
   }
 }
