@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 import AppHeader from '../../components/AppHeader/AppHeader.vue';
-import LoginModal from '../../components/LoginModal.vue';
+import LoginModal from '../../components/LoginModal/LoginModal.vue';
 
 export default {
   components: { AppHeader, LoginModal }, 
