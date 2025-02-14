@@ -14,10 +14,10 @@
               <h3 class="post-title">{{ post.title }}</h3>
               <p class="post-sub">{{ post.sub }}</p>
               <div class="post-footer">
-                <span class="post-user">{{ post.user }}</span>
-                <span>{{ post.date }}</span>
+                <p class="post-user">{{ post.user }}</p>
+                <p class="post-date">{{ post.date }}</p>
                 <img src="../../../images/heart.svg" alt="" class="heart">
-                <span class="like">{{ post.likeNum }}</span>
+                <p class="like">{{ post.likeNum }}</p>
               </div>
             </div>
           </div>

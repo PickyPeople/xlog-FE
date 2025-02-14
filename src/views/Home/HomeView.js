@@ -42,6 +42,51 @@ export default {
         user: "PickyPeople",
         likeNum: 4
       },
+      {
+        id: 5,
+        img: "../../../images/postImg.png",
+        title: "첫 게시물",
+        sub: "네번쨰 게시물에 대한 설명입니다.",
+        date: "2025-02-03",
+        user: "PickyPeople",
+        likeNum: 4
+      },
+      {
+        id: 6,
+        img: "../../../images/postImg.png",
+        title: "첫 게시물",
+        sub: "네번쨰 게시물에 대한 설명입니다.",
+        date: "2025-02-03",
+        user: "PickyPeople",
+        likeNum: 4
+      },
+      {
+        id: 7,
+        img: "../../../images/postImg.png",
+        title: "첫 게시물",
+        sub: "네번쨰 게시물에 대한 설명입니다.",
+        date: "2025-02-03",
+        user: "PickyPeople",
+        likeNum: 4
+      },
+      {
+        id: 8,
+        img: "../../../images/postImg.png",
+        title: "첫 게시물",
+        sub: "네번쨰 게시물에 대한 설명입니다.",
+        date: "2025-02-03",
+        user: "PickyPeople",
+        likeNum: 4
+      },
+      {
+        id: 9,
+        img: "../../../images/postImg.png",
+        title: "첫 게시물",
+        sub: "네번쨰 게시물에 대한 설명입니다.",
+        date: "2025-02-03",
+        user: "PickyPeople",
+        likeNum: 4
+      },
     ]
     const isLoginModalOpen = ref(false);
 
