@@ -85,3 +85,9 @@ h1.logo{
   background-color: #ccc;
   border-radius: 50%;
 }
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}

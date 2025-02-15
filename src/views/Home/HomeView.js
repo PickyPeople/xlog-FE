@@ -3,6 +3,7 @@ import AppHeader from '../../components/AppHeader/AppHeader.vue';
 import LoginModal from '../../components/LoginModal/LoginModal.vue';
 
 export default {
+  name: 'HomeView',
   components: { AppHeader, LoginModal }, 
   setup() {
     const posts = [
@@ -89,7 +90,27 @@ export default {
       },
     ]
     const isLoginModalOpen = ref(false);
+    const isLoggedIn = ref(false);
 
-    return { isLoginModalOpen, posts };
+    const handleLoginSuccess = () => {
+      console.log('이전 로그인 상태:', isLoggedIn.value); // 추가
+      isLoggedIn.value = true;
+      console.log('변경된 로그인 상태:', isLoggedIn.value); // 추가
+      isLoginModalOpen.value = false;
+    };
+    
+    const handleLogout = () => {
+      console.log('로그아웃 이전 상태:', isLoggedIn.value); // 추가
+      isLoggedIn.value = false;
+      console.log('로그아웃 이후 상태:', isLoggedIn.value); // 추가
+    };
+
+    return { 
+      isLoginModalOpen, 
+      isLoggedIn,
+      posts,
+      handleLoginSuccess,
+      handleLogout
+    };
   }
 }

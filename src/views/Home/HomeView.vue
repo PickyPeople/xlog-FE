@@ -1,9 +1,16 @@
 <template>
   <div>
-    <AppHeader @open-login="isLoginModalOpen = true" />
+    <div style="display: none">{{ console.log('HomeView - isLoggedIn:', isLoggedIn) }}</div>
+    
+    <AppHeader 
+      :is-logged-in="isLoggedIn"
+      @open-login="isLoginModalOpen = true"
+      @logout="handleLogout"
+    />
     <LoginModal
-      :isOpen="isLoginModalOpen"
+      :is-open="isLoginModalOpen"
       @close-login="isLoginModalOpen = false"
+      @login-success="handleLoginSuccess"
     />
     <main class="container">
       <div class="inner">
