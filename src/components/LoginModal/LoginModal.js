@@ -13,17 +13,18 @@ export default {
     const email = ref('');
     const password = ref('');
     const error = ref('');
+    const correct = ref(true);
 
     const handleLogin = async() => {
       try{
         const res = await authApi.login(email.value, password.value);
         if(res.data.status == 'success') {
-          console.log(res.data.status);
           emit('close-login');
         }
       } catch(err) {
         console.log("error");
         error.value = 'failed login'
+        correct.value = false;
       }
     }
 
@@ -36,6 +37,7 @@ export default {
       email,
       password,
       error,
+      correct,
       handleLogin,
       handleOverlayClick
     }

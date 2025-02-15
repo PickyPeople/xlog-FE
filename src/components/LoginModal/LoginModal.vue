@@ -2,6 +2,7 @@
   <div v-if="isOpen" class="modal-overlay" @click="handleOverlayClick">
     <div class="modal-content"  @click.stop>
       <h2>Xlog</h2>
+      <p v-if="!correct">이메일 또는 비밀번호를 다시 확인하여주십시오</p>
       <form @submit.prevent="handleLogin">
         <div class="input-group">
           <label for="email">이메일</label>
@@ -33,5 +34,5 @@
 <script src="./LoginModal.js">
 </script>
 
-<style src="./LoginModal.css">
+<style src="./LoginModal.css" scoped>
 </style>
