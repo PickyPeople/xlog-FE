@@ -2,7 +2,7 @@
   <div v-if="isOpen" class="modal-overlay" @click="handleOverlayClick">
     <div class="modal-content"  @click.stop>
       <h2>Xlog</h2>
-      <form action="">
+      <form @submit.prevent="handleLogin">
         <div class="input-group">
           <label for="email">이메일</label>
           <input 
