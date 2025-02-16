@@ -32,7 +32,7 @@ Ruby on RailsとVue.jsを用いたブログプラットフォームを構築し�
 # **フォルダーの仕組み**
 
 # **ログインモダル作り
-＃＃＃AppHeader.vue
+＃＃＃ AppHeader.vue
 ```html
  <button 
   class="login" 
@@ -41,7 +41,7 @@ Ruby on RailsとVue.jsを用いたブログプラットフォームを構築し�
   {{ isLoggedIn ? '로그아웃' : '로그인' }}
 </button>
 ```
-###AppHeaderScript.js
+### AppHeaderScript.js
 ```javascript
 const handleLoginClick = () => {
        if (props.isLoggedIn) {
@@ -54,7 +54,7 @@ const handleLoginClick = () => {
 
 isLoggedInの状態によってemit関数で親のcomponentである、HomeView.vueに知らせます。
 
-###HomeView.vue
+### HomeView.vue
 ```html
  <AppHeader 
   :is-logged-in="isLoggedIn"
@@ -67,7 +67,7 @@ isLoggedInの状態によってemit関数で親のcomponentである、HomeView.
   @login-success="handleLoginSuccess"
 />
 ```
-###LoginModal.vueの一部分
+### LoginModal.vueの一部分
 ```html
  <div v-if="isOpen" class="modal-overlay" @click="handleOverlayClick">
 ```
