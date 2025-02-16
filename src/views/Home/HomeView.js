@@ -1,6 +1,7 @@
 import { ref } from 'vue';
 import AppHeader from '../../components/AppHeader/AppHeader.vue';
 import LoginModal from '../../components/LoginModal/LoginModal.vue';
+import { authApi } from '@/api/auth';
 
 export default {
   name: 'HomeView',
@@ -99,10 +100,20 @@ export default {
       isLoginModalOpen.value = false;
     };
     
-    const handleLogout = () => {
-      console.log('로그아웃 이전 상태:', isLoggedIn.value); // 추가
-      isLoggedIn.value = false;
-      console.log('로그아웃 이후 상태:', isLoggedIn.value); // 추가
+    const handleLogout = async () => {
+      try {
+        console.log('로그아웃 시도');
+        const response = await authApi.logout();
+        
+        if (response.data.status === 'success') {
+          console.log('로그아웃 이전 상태:', isLoggedIn.value);
+          isLoggedIn.value = false;
+          console.log('로그아웃 이후 상태:', isLoggedIn.value);
+        }
+      } catch (error) {
+        console.error('로그아웃 실패:', error);
+        // 에러 처리가 필요하다면 여기에 추가
+      }
     };
 
     return { 

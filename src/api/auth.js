@@ -10,5 +10,9 @@ export const authApi = {
       email: email,
       password: password
     })
+  },
+
+  logout() {
+    return axios.post(`${API_URL}/logout`)
   }
 }
