@@ -52,7 +52,7 @@ const handleLoginClick = () => {
      };
 ```
 
-isLoggedInの状態によってemit関数で親のcomponentである、HomeView.vueに知らせます。
+1. isLoggedInの状態によってemit関数で親のcomponentである、HomeView.vueに知らせます。
 
 ### HomeView.vue
 ```html
@@ -71,8 +71,8 @@ isLoggedInの状態によってemit関数で親のcomponentである、HomeView.
 ```html
  <div v-if="isOpen" class="modal-overlay" @click="handleOverlayClick">
 ```
-AppHeaderScriptでもらった、'open-login'をAppHeaderっていうcomponentでisLoginModalOpenをtrueに変えます。  
-HomeView.vueでLoginModalというcomponentが、is-openの状態をisLoginModalOpenで管理してるため、LoginModalにv-ifを使い、LoginModalが開けます。
+1. AppHeaderScriptでもらった、'open-login'をAppHeaderっていうcomponentでisLoginModalOpenをtrueに変えます。  
+1. HomeView.vueでLoginModalというcomponentが、is-openの状態をisLoginModalOpenで管理してるため、LoginModalにv-ifを使い、LoginModalが開けます。
 
 
 
