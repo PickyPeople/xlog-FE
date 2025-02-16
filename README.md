@@ -156,7 +156,7 @@ const handleLogout = async () => {
     };
 ```
 
-1. LoginModal.vueでログインのボートンを押せば、formタグによって、LoginModal.jsのhandlelogin関数によって、auth.jsを通じてe-mailとパスワードの確認をします。
+1. LoginModal.vueでログインのボートンを押せば、formタグによって、LoginModal.jsのhandlelogin関数によって、auth.jsのauthApiのlogin関数を通じてe-mailとパスワードの確認をします。
 2. e-mailとパスワードがあってた場合、親のcomponentにlogin-successとclose-loginを伝えます。
 3. HomeView.vueのAppHeader componentにはis-logged-inにtureを渡し、LoginModalのisLoginModalOpenをfalseに交わし、ログインモダルを閉じます。
 4. AppHeader.vueはisLoggedInの状態によって、UIがログインからログアウトに変わります。
