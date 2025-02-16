@@ -73,7 +73,7 @@ const handleLoginClick = () => {
 1. AppHeaderScriptでもらった、'open-login'をAppHeaderっていうcomponentでisLoginModalOpenをtrueに変えます。  
 1. HomeView.vueでLoginModalというcomponentが、is-openの状態をisLoginModalOpenで管理してるため、LoginModalにv-ifを使い、LoginModalが開けます。
 
-# **ログイン通信**
+# **ログインとログアウト通信**
 ### auth.js
 ``` javascript
 import axios from 'axios'
@@ -142,7 +142,28 @@ const handleLoginSuccess = () => {
       isLoggedIn.value = true; 
       isLoginModalOpen.value = false;
     };
+
+const handleLogout = async () => {
+      try {
+        const response = await authApi.logout();
+        
+        if (response.data.status === 'success') {
+          isLoggedIn.value = false;
+        }
+      } catch (error) {
+        console.error('로그아웃 실패:', error);
+      }
+    };
 ```
+
+1. LoginModal.vueでログインのボートンを押せば、formタグによって、LoginModal.jsのhandlelogin関数によって、auth.jsを通じてe-mailとパスワードの確認をします。
+2. e-mailとパスワードがあってた場合、親のcomponentにlogin-successとclose-loginを伝えます。
+3. HomeView.vueのAppHeader componentにはis-logged-inにtureを渡し、LoginModalのisLoginModalOpenをfalseに交わし、ログインモダルを閉じます。
+4. AppHeader.vueはisLoggedInの状態によって、UIがログインからログアウトに変わります。
+5. ログアウトを押したら、AppHeaderScript.jsにある、handleLoginClick関数によって、emit('logout')関数が実行されます。
+6. HomeView.vueではlogoutをもらい、HomeView.jsのhandleLogout関数が実行されます。
+7. それによって、 auth.jsのauthApiのlogout関数が実行されます。
+
 
 
 
