@@ -73,6 +73,77 @@ const handleLoginClick = () => {
 1. AppHeaderScriptでもらった、'open-login'をAppHeaderっていうcomponentでisLoginModalOpenをtrueに変えます。  
 1. HomeView.vueでLoginModalというcomponentが、is-openの状態をisLoginModalOpenで管理してるため、LoginModalにv-ifを使い、LoginModalが開けます。
 
+# **ログイン通信**
+### auth.js
+``` javascript
+import axios from 'axios'
+
+const API_URL = 'http://localhost:3000/api'
+
+export const authApi = {
+  login(email, password) {
+    return axios.post(`${API_URL}/login`, {
+      email: email,
+      password: password
+    })
+  },
+
+  logout() {
+    return axios.post(`${API_URL}/logout`)
+  }
+}
+```
+###LoginModal.vue
+``` html
+  <form @submit.prevent="handleLogin">
+        <div class="input-group">
+          <label for="email">e-mail</label>
+          <input 
+            type="email" 
+            id="email"
+            v-model="email"
+            placeholder="e-mailを入力してください"
+            required
+          />
+        </div>
+        <div class="input-group">
+          <label for="password">パスワド</label>
+          <input 
+            type="password"
+            id="password"
+            v-model="password"
+            placeholder="パスワードを入力してください"
+            required 
+          />
+        </div>
+        <button type="submit" class="login-btn">로그인</button>
+        <button type="button" class="register-btn">회원가입</button>
+      </form>
+```
+### LoginModal.js
+``` javascript
+ const handleLogin = async() => {
+      try{
+        const res = await authApi.login(email.value, password.value);
+        if(res.data.status == 'success') {
+          emit('login-success');
+          emit('close-login');
+        }
+      } catch(err) {
+        console.error("Login error:", err);
+        error.value = 'failed login'
+        correct.value = false;
+      }
+    }
+```
+### HomeView.jsの一部分
+```javascript
+const handleLoginSuccess = () => {
+      isLoggedIn.value = true; 
+      isLoginModalOpen.value = false;
+    };
+```
+
 
 
 
