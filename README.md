@@ -30,3 +30,50 @@ Ruby on RailsとVue.jsを用いたブログプラットフォームを構築し�
 </ul>
 
 # **フォルダーの仕組み**
+
+# **ログインモダル作り
+＃＃＃AppHeader.vue
+```html
+ <button 
+  class="login" 
+  @click="handleLoginClick"
+>
+  {{ isLoggedIn ? '로그아웃' : '로그인' }}
+</button>
+```
+###AppHeaderScript.js
+```javascript
+const handleLoginClick = () => {
+       if (props.isLoggedIn) {
+         emit('logout');
+       } else {
+         emit('open-login');
+       }
+     };
+```
+
+isLoggedInの状態によってemit関数で親のcomponentである、HomeView.vueに知らせます。
+
+###HomeView.vue
+```html
+ <AppHeader 
+  :is-logged-in="isLoggedIn"
+  @open-login="isLoginModalOpen = true"
+  @logout="handleLogout"
+/>
+<LoginModal
+  :is-open="isLoginModalOpen"
+  @close-login="isLoginModalOpen = false"
+  @login-success="handleLoginSuccess"
+/>
+```
+###LoginModal.vueの一部分
+```html
+ <div v-if="isOpen" class="modal-overlay" @click="handleOverlayClick">
+```
+AppHeaderScriptでもらった、'open-login'をAppHeaderっていうcomponentでisLoginModalOpenをtrueに変えます。
+HomeView.vueでLoginModalというcomponentが、is-openの状態をisLoginModalOpenで管理してるため、LoginModalにv-ifを使い、LoginModalが開けます。
+
+
+
+
