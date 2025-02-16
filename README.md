@@ -93,7 +93,7 @@ export const authApi = {
   }
 }
 ```
-###LoginModal.vue
+### LoginModal.vue
 ``` html
   <form @submit.prevent="handleLogin">
         <div class="input-group">
