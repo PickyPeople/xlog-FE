@@ -38,7 +38,7 @@ Ruby on RailsとVue.jsを用いたブログプラットフォームを構築し�
   class="login" 
   @click="handleLoginClick"
 >
-  {{ isLoggedIn ? '로그아웃' : '로그인' }}
+  {{ isLoggedIn ? 'ログアウト' : 'ログイン' }}
 </button>
 ```
 ### AppHeaderScript.js
