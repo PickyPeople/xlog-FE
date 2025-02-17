@@ -12,7 +12,7 @@
           </li>
         </ul>
         <div class="button-group">
-          <button v-if="isLoggedIn" class="new-post">새글 작성</button>
+          <button v-if="isLoggedIn" @click="navigateWrite" class="new-post">새글 작성</button>
           <button 
             class="login" 
             @click="handleLoginClick"

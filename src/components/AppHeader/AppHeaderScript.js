@@ -17,6 +17,10 @@ export default {
       router.push('/');
     };
 
+    const navigateWrite = () => {
+      router.push('/write');
+    }
+
     const handleLoginClick = () => {
       if (props.isLoggedIn) {
         emit('logout');
@@ -27,6 +31,7 @@ export default {
 
     return { 
       navigateHome,
+      navigateWrite,
       handleLoginClick
     };
   }

@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue'; 
 import AppHeader from '../../components/AppHeader/AppHeader.vue';
 import LoginModal from '../../components/LoginModal/LoginModal.vue';
 import { authApi } from '@/api/auth';
@@ -92,6 +92,28 @@ export default {
     ]
     const isLoginModalOpen = ref(false);
     const isLoggedIn = ref(false);
+
+     // 로그인 상태 확인 함수
+     const checkAuth = async () => {
+      try {
+        // localStorage에서 토큰 확인
+        const token = localStorage.getItem('token');
+        if (token) {
+          const res = await authApi.me();
+          if (res.data.status === 'success') {
+            isLoggedIn.value = true;
+          }
+        }
+      } catch (error) {
+        console.error('인증 확인 실패:', error);
+        localStorage.removeItem('token');
+        isLoggedIn.value = false;
+      }
+    };
+
+    onMounted(() => {
+      checkAuth();
+    });
 
     const handleLoginSuccess = () => {
       console.log('이전 로그인 상태:', isLoggedIn.value); // 추가
