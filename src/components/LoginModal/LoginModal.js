@@ -35,12 +35,17 @@ export default {
       }
     }
 
+    const handleOverlayClick = () => {
+      emit('close-login');
+    }
+
     return { 
       email,
       password,
       error,
       correct,
-      handleLogin
+      handleLogin,
+      handleOverlayClick
     }
   }
 }
