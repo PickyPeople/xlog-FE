@@ -54,5 +54,9 @@ export const postsApi = {
         'Authorization': `Bearer ${token}`
       }
     });
+  },
+
+  searchPosts: (keyword) => {
+    return axios.get(`http://localhost:3000/api/posts/search?keyword=${encodeURIComponent(keyword)}`);
   }
 };

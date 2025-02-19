@@ -38,7 +38,7 @@
       </div>
 
       <div class="editor-footer">
-        <button class="btn-save" @click="router.push(`/posts/${$route.params.id}`)">취소</button>
+        <button class="btn-save" @click="editCancel">취소</button>
         <button class="btn-publish" @click="handleUpdate">수정하기</button>
       </div>
     </main>

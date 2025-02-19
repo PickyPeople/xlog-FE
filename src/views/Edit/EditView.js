@@ -62,6 +62,10 @@ export default {
       fetchPost();
     });
 
+    const editCancel = () => {
+      router.push(`/posts/${route.params.id}`)
+    }
+
     return {
       title,
       content,
@@ -70,7 +74,8 @@ export default {
       isLoggedIn,
       isLoginModalOpen,
       handleLoginSuccess,
-      handleLogout
+      handleLogout,
+      editCancel
     };
   }
 };
