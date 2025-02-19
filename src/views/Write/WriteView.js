@@ -40,7 +40,7 @@ export default {
         const formData = new FormData();
         formData.append('post[title]', title.value);
         formData.append('post[content]', content.value); //본문 내용
-        formData.append('post[sub]', content.value.substring(0, 10)); // content의 앞부분을 sub로 사용
+        formData.append('post[sub]', content.value.substring(0, 100) + "..."); // content의 앞부분을 sub로 사용
         
         if (image.value) {
           formData.append('post[image]', image.value);
