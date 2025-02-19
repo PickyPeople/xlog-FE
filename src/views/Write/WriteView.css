@@ -23,6 +23,18 @@
   border-bottom: 2px solid #343a40;
 }
 
+.image-input {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 2px dashed #ddd;
+  border-radius: 4px;
+}
+
+.image-field {
+  width: 100%;
+  padding: 0.5rem;
+}
+
 .tag-container {
   display: flex;
   flex-wrap: wrap;

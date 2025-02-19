@@ -21,7 +21,7 @@
               <h3 class="post-title">{{ post.title }}</h3>
               <p class="post-sub">{{ post.sub }}</p>
               <div class="post-footer">
-                <p class="post-user">{{ post.user }}</p>
+                <p class="post-user">{{ post.username }}</p>
                 <p class="post-date">{{ post.date }}</p>
                 <img src="../../../images/heart.svg" alt="" class="heart">
                 <p class="like">{{ post.likeNum }}</p>

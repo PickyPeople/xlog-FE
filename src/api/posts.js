@@ -1,4 +1,3 @@
-// src/api/posts.js
 import axios from 'axios';
 
 export const postsApi = {
@@ -8,8 +7,14 @@ export const postsApi = {
   },
 
   // 새 게시물 작성
-  createPost: (postData) => {
-    return axios.post('http://localhost:3000/api/posts', { post: postData });
+  createPost: (formData) => {
+    const token = localStorage.getItem('token');
+    return axios.post('http://localhost:3000/api/posts', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${token}`
+      }
+    });
   },
 
   // 특정 게시물 조회
