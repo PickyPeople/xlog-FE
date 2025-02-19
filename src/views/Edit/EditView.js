@@ -14,6 +14,7 @@ export default {
     const title = ref('');
     const content = ref('');
     const image = ref(null);
+    const currentTag = ref('');
     const { isLoggedIn, isLoginModalOpen, checkAuth, handleLoginSuccess, handleLogout } = useAuth();
     const tags = ref([]);
 
@@ -21,8 +22,10 @@ export default {
       try {
         const response = await postsApi.getPost(route.params.id);
         const post = response.data;
+        console.log(post)
         title.value = post.title;
         content.value = post.content;
+        tags.value = post.tags || [];
       } catch (error) {
         console.error('게시물 로드 실패:', error);
       }
@@ -57,14 +60,25 @@ export default {
       }
     };
 
-    onMounted(() => {
-      checkAuth();
-      fetchPost();
-    });
+    const addTag = () => {
+      if (currentTag.value.trim() && !tags.value.includes(currentTag.value.trim())) {
+        tags.value.push(currentTag.value.trim());
+        currentTag.value = '';
+      }
+    };
+
+    const removeTag = (index) => {
+      tags.value.splice(index, 1);
+    };
 
     const editCancel = () => {
       router.push(`/posts/${route.params.id}`)
     }
+
+    onMounted(() => {
+      checkAuth();
+      fetchPost();
+    });
 
     return {
       title,
@@ -75,7 +89,11 @@ export default {
       isLoginModalOpen,
       handleLoginSuccess,
       handleLogout,
-      editCancel
+      editCancel,
+      addTag,
+      removeTag,
+      tags,
+      currentTag,
     };
   }
 };
