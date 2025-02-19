@@ -16,7 +16,11 @@
       <div class="inner">
         <div class="contentBox">
           <div v-for="post in posts" :key="post.id" class="post-card">
-            <img src="../../../images/postImg.png" alt="게시물 이미지" class="post-img" />
+            <img 
+              :src="post.image_url || '../../../images/postImg.png'" 
+              alt="게시물 이미지" 
+              class="post-img"
+            />
             <div class="post-content">
               <h3 class="post-title">{{ post.title }}</h3>
               <p class="post-sub">{{ post.sub }}</p>
