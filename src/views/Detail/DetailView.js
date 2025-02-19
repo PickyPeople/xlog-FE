@@ -18,10 +18,6 @@ export default {
       return post.value?.image_url;
     });
 
-    const handleEdit = () => {
-      router.push(`/edit/${post.value.id}`);
-    };
-
     const fetchPost = async () => {
       try {
         const response = await postsApi.getPost(route.params.id);
@@ -30,6 +26,10 @@ export default {
       } catch (error) {
         console.error('게시물 로드 실패:', error);
       }
+    };
+
+    const handleEdit = () => {
+      router.push(`/edit/${post.value.id}`);
     };
 
     const handleDelete = async () => {

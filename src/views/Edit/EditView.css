@@ -1,0 +1,66 @@
+/* src/views/Edit/EditView.css */
+.editor-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.title-input {
+  margin-bottom: 2rem;
+}
+
+.title-field {
+  width: 100%;
+  padding: 1rem;
+  font-size: 2rem;
+  border: none;
+  outline: none;
+  border-bottom: 2px solid #eee;
+}
+
+.image-input {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 2px dashed #ddd;
+  border-radius: 4px;
+}
+
+.editor-content {
+  margin: 2rem 0;
+}
+
+.content-editor {
+  width: 100%;
+  min-height: 400px;
+  padding: 1rem;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+.editor-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.btn-save,
+.btn-publish {
+  padding: 0.5rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.btn-save {
+  background-color: #f5f5f5;
+}
+
+.btn-publish {
+  background-color: #000;
+  color: white;
+}

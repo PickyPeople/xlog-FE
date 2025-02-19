@@ -23,8 +23,12 @@ export const postsApi = {
   },
 
   // 게시물 수정
-  updatePost: (postId, postData) => {
-    return axios.put(`http://localhost:3000/api/posts/${postId}`, { post: postData });
+  updatePost: (postId, formData) => {
+    return axios.put(`http://localhost:3000/api/posts/${postId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
   },
 
   // 게시물 삭제
