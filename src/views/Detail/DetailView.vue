@@ -1,10 +1,11 @@
 <template>
+  <AppHeader :is-logged-in="isLoggedIn" @open-login="isLoginModalOpen = true" @logout="handleLogout" />
   <div>
     <main class="detail-container">
       <div v-if="post" class="post-detail">
         <div class="image-container">
-          <img 
-            :src="post.image_url || '../../../images/postImg.png'" 
+          <img
+            :src="post.image_url || '../../../images/postImg.png'"
             :alt="post.title"
             class="detail-img"
             @error="handleImageError"
@@ -19,11 +20,13 @@
         <div class="content">
           {{ post.content }}
         </div>
+        <div class="button-container">
+          <button @click="handleEdit" class="btn edit-btn">수정하기</button>
+          <button @click="handleDelete" class="btn delete-btn">삭제하기</button>
+        </div>
       </div>
       <!-- 로딩 중일 때 표시할 내용 -->
-      <div v-else class="loading">
-        로딩 중...
-      </div>
+      <div v-else class="loading">로딩 중...</div>
     </main>
   </div>
 </template>
