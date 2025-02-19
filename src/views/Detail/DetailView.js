@@ -7,12 +7,12 @@ import { useAuth } from '@/composables/useAuth';
 
 export default {
   name: 'DetailView',
-  components: { AppHeader, LoginModal }, 
+  components: { AppHeader, LoginModal },
   setup() {
     const route = useRoute();
     const router = useRouter();
     const post = ref(null);
-    const { isLoggedIn, isLoginModalOpen, checkAuth, handleLoginSuccess, handleLogout } = useAuth();
+    const { isLoggedIn, currentUser, isLoginModalOpen, checkAuth, handleLoginSuccess, handleLogout } = useAuth();
 
     const postImage = computed(() => {
       return post.value?.image_url;
@@ -21,7 +21,6 @@ export default {
     const fetchPost = async () => {
       try {
         const response = await postsApi.getPost(route.params.id);
-        console.log(response.data);
         post.value = response.data;
       } catch (error) {
         console.error('게시물 로드 실패:', error);
@@ -43,10 +42,20 @@ export default {
       }
     };
 
-    onMounted(() => {
-      checkAuth();
-      fetchPost();
+    onMounted(async () => {
+      await fetchPost();
+      await checkAuth();
+      console.log('마운트 후 currentUser:', currentUser.value);
+      console
     });
+
+    const isAuthor = computed(() => {
+      return isLoggedIn.value &&
+        post.value &&
+        currentUser.value === post.value.username;
+    });
+
+
 
     return {
       post,
@@ -56,7 +65,8 @@ export default {
       isLoggedIn,
       isLoginModalOpen,
       handleLoginSuccess,
-      handleLogout
+      handleLogout,
+      isAuthor,
     };
   }
 };

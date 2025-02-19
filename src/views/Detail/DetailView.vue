@@ -35,7 +35,7 @@
         <div class="content">
           {{ post.content }}
         </div>
-        <div class="button-container">
+        <div  v-if="isAuthor" class="button-container">
           <button @click="handleEdit" class="btn edit-btn">수정하기</button>
           <button @click="handleDelete" class="btn delete-btn">삭제하기</button>
         </div>
