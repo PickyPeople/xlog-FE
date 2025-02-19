@@ -1,5 +1,15 @@
 <template>
-  <AppHeader :is-logged-in="isLoggedIn" @open-login="isLoginModalOpen = true" @logout="handleLogout" />
+  <AppHeader 
+    :is-logged-in="isLoggedIn" 
+    @open-login="isLoginModalOpen = true" 
+    @logout="handleLogout" 
+  />
+  <LoginModal
+    v-if="isLoginModalOpen"
+    :is-open="isLoginModalOpen"
+    @close-login="isLoginModalOpen = false"
+    @login-success="handleLoginSuccess"
+  />
   <div>
     <main class="detail-container">
       <div v-if="post" class="post-detail">
@@ -25,7 +35,6 @@
           <button @click="handleDelete" class="btn delete-btn">삭제하기</button>
         </div>
       </div>
-      <!-- 로딩 중일 때 표시할 내용 -->
       <div v-else class="loading">로딩 중...</div>
     </main>
   </div>

@@ -39,13 +39,18 @@ export default {
       try {
         const formData = new FormData();
         formData.append('post[title]', title.value);
-        formData.append('post[content]', content.value); //본문 내용
-        formData.append('post[sub]', content.value.substring(0, 100) + "..."); // content의 앞부분을 sub로 사용
+        formData.append('post[content]', content.value);
+        
+        const sub = content.value.length > 100 
+          ? content.value.substring(0, 100) + "..."
+          : content.value;
+        
+        formData.append('post[sub]', sub);
         
         if (image.value) {
           formData.append('post[image]', image.value);
         }
-
+    
         await postsApi.createPost(formData);
         router.push('/');
       } catch (error) {

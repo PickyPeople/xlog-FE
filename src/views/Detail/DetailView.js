@@ -2,14 +2,17 @@ import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { postsApi } from '@/api/posts';
 import AppHeader from '@/components/AppHeader/AppHeader.vue';
+import LoginModal from '@/components/LoginModal/LoginModal.vue';
+import { useAuth } from '@/composables/useAuth';
 
 export default {
   name: 'DetailView',
-  conponent: {AppHeader},
+  components: { AppHeader, LoginModal }, 
   setup() {
     const route = useRoute();
     const router = useRouter();
     const post = ref(null);
+    const { isLoggedIn, isLoginModalOpen, checkAuth, handleLoginSuccess, handleLogout } = useAuth();
 
     const postImage = computed(() => {
       return post.value?.image_url;
@@ -41,6 +44,7 @@ export default {
     };
 
     onMounted(() => {
+      checkAuth();
       fetchPost();
     });
 
@@ -48,7 +52,11 @@ export default {
       post,
       postImage,
       handleEdit,
-      handleDelete
+      handleDelete,
+      isLoggedIn,
+      isLoginModalOpen,
+      handleLoginSuccess,
+      handleLogout
     };
   }
 };
