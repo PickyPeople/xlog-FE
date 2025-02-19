@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-// API 요청에 토큰을 포함하는 인터셉터 추가
 axios.interceptors.request.use(
   config => {
     const token = localStorage.getItem('token');
