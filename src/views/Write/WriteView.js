@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router';
 export default {
   name: 'WriteContent',
   emits: ['save-draft', 'publish'],
-  setup(props, { emit }) {
+  setup() {
     const title = ref('');
     const content = ref('');
     const tags = ref([]);
