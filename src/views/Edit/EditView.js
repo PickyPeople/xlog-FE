@@ -15,6 +15,7 @@ export default {
     const content = ref('');
     const image = ref(null);
     const { isLoggedIn, isLoginModalOpen, checkAuth, handleLoginSuccess, handleLogout } = useAuth();
+    const tags = ref([]);
 
     const fetchPost = async () => {
       try {
@@ -37,6 +38,10 @@ export default {
         if (image.value) {
           formData.append('post[image]', image.value);
         }
+
+        tags.value.forEach(tag => {
+          formData.append('post[tags][]', tag);
+        });
 
         await postsApi.updatePost(route.params.id, formData);
         router.push(`/posts/${route.params.id}`);

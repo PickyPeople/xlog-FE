@@ -22,6 +22,11 @@
           />
         </div>
         <h1 class="detail-title">{{ post.title }}</h1>
+        <div class="tags-container">
+          <span v-for="tag in post.tags" :key="tag" class="tag">
+            {{ tag }}
+          </span>
+        </div>
         <div class="post-info">
           <span class="author">{{ post.username }}</span>
           <span class="date">{{ post.date }}</span>

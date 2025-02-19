@@ -24,6 +24,21 @@
   margin-bottom: 1rem;
 }
 
+.tags-container {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+}
+
+.tag {
+  background-color: #f1f1f1;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
 .post-info {
   display: flex;
   gap: 1rem;

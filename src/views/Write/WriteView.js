@@ -50,6 +50,10 @@ export default {
         if (image.value) {
           formData.append('post[image]', image.value);
         }
+
+        tags.value.forEach(tag => {
+          formData.append('post[tags][]', tag);
+        });
     
         await postsApi.createPost(formData);
         router.push('/');

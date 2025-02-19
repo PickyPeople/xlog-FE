@@ -7,7 +7,35 @@ export const postsApi = {
 
   createPost: (formData) => {
     const token = localStorage.getItem('token');
+    // FormData에 태그 배열 추가
+    if (formData.get('post[tags][]') === null && formData.get('tags')) {
+      const tags = formData.get('tags');
+      formData.delete('tags');
+      tags.forEach(tag => {
+        formData.append('post[tags][]', tag);
+      });
+    }
+
     return axios.post('http://localhost:3000/api/posts', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  },
+
+  updatePost: (postId, formData) => {
+    const token = localStorage.getItem('token');
+    // FormData에 태그 배열 추가
+    if (formData.get('post[tags][]') === null && formData.get('tags')) {
+      const tags = formData.get('tags');
+      formData.delete('tags');
+      tags.forEach(tag => {
+        formData.append('post[tags][]', tag);
+      });
+    }
+
+    return axios.put(`http://localhost:3000/api/posts/${postId}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         'Authorization': `Bearer ${token}`
@@ -19,15 +47,12 @@ export const postsApi = {
     return axios.get(`http://localhost:3000/api/posts/${postId}`);
   },
 
-  updatePost: (postId, formData) => {
-    return axios.put(`http://localhost:3000/api/posts/${postId}`, formData, {
+  deletePost: (postId) => {
+    const token = localStorage.getItem('token');
+    return axios.delete(`http://localhost:3000/api/posts/${postId}`, {
       headers: {
-        'Content-Type': 'multipart/form-data'
+        'Authorization': `Bearer ${token}`
       }
     });
-  },
-
-  deletePost: (postId) => {
-    return axios.delete(`http://localhost:3000/api/posts/${postId}`);
   }
 };
