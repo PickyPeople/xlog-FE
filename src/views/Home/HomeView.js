@@ -3,6 +3,7 @@ import AppHeader from '../../components/AppHeader/AppHeader.vue';
 import LoginModal from '../../components/LoginModal/LoginModal.vue';
 import { authApi } from '@/api/auth';
 import { postsApi } from '@/api/posts';
+import { useRouter } from 'vue-router';
 
 export default {
   name: 'HomeView',
@@ -11,6 +12,7 @@ export default {
     const posts = ref([]);
     const isLoginModalOpen = ref(false);
     const isLoggedIn = ref(false);
+    const router = useRouter();
 
     const fetchPosts = async () => {
       try {
@@ -68,12 +70,17 @@ export default {
       }
     };
 
+    const goToDetail = (postId) => {
+      router.push(`/posts/${postId}`);
+    };
+
     return { 
       isLoginModalOpen, 
       isLoggedIn,
       posts,
       handleLoginSuccess,
-      handleLogout
+      handleLogout,
+      goToDetail
     };
   }
 }

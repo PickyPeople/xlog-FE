@@ -15,7 +15,7 @@
     <main class="container">
       <div class="inner">
         <div class="contentBox">
-          <div v-for="post in posts" :key="post.id" class="post-card">
+          <div v-for="post in posts" :key="post.id" class="post-card"  @click="goToDetail(post.id)">
             <img 
               :src="post.image_url || '../../../images/postImg.png'" 
               alt="게시물 이미지" 
