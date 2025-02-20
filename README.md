@@ -130,6 +130,90 @@ export default {
   }
 }
 ```
+#### API通信層 (auth.js)
+```javascript
+ axios.interceptors.request.use(
+  config => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  error => {
+    return Promise.reject(error);
+  }
+);
+
+export const authApi = {
+  login: (email, password) => {
+    return axios.post('http://localhost:3000/api/login', { email, password });
+  },
+
+  logout: () => {
+    localStorage.removeItem('token');  
+    return axios.post('http://localhost:3000/api/logout');
+  },
+
+  me: () => {
+    return axios.get('http://localhost:3000/api/me');
+  }
+};
+```
+#### 認証状態管理 (useAuth Composable)
+```javascript
+ export function useAuth() {
+  const isLoggedIn = ref(false);
+  const isLoginModalOpen = ref(false);
+  const currentUser = ref(null);
+
+  const checkAuth = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const res = await authApi.me();
+        if (res.data.status === 'success') {
+          isLoggedIn.value = true;
+          currentUser.value = res.data.username || res.data.user?.username;
+          console.log('설정된 currentUser:', currentUser.value);
+        }
+      }
+    } catch (error) {
+      console.error('인증 확인 실패:', error);
+      localStorage.removeItem('token');
+      isLoggedIn.value = false;
+      currentUser.value = null;
+    }
+  };
+
+  const handleLoginSuccess = () => {
+    isLoggedIn.value = true;
+    isLoginModalOpen.value = false;
+    checkAuth();
+  };
+
+  const handleLogout = async () => {
+    try {
+      const response = await authApi.logout();
+      if (response.data.status === 'success') {
+        isLoggedIn.value = false;
+        currentUser.value = null; 
+      }
+    } catch (error) {
+      console.error('로그아웃 실패:', error);
+    }
+  };
+
+  return {
+    isLoggedIn,
+    isLoginModalOpen,
+    currentUser, 
+    checkAuth,
+    handleLoginSuccess,
+    handleLogout
+  };
+}
+```
 
 ### 2. 投稿CRUD
 
