@@ -1,7 +1,5 @@
 <template>
   <div>
-    <div style="display: none">{{ console.log('HomeView - isLoggedIn:', isLoggedIn) }}</div>
-    
     <AppHeader 
       :is-logged-in="isLoggedIn"
       @open-login="isLoginModalOpen = true"

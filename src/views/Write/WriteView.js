@@ -4,7 +4,6 @@ import { postsApi } from '@/api/posts';
 
 export default {
   name: 'WriteContent',
-  emits: ['save-draft', 'publish'],
   setup() {
     const title = ref('');
     const content = ref('');

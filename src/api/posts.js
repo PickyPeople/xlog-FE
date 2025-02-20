@@ -7,7 +7,6 @@ export const postsApi = {
 
   createPost: (formData) => {
     const token = localStorage.getItem('token');
-    // FormData에 태그 배열 추가
     if (formData.get('post[tags][]') === null && formData.get('tags')) {
       const tags = formData.get('tags');
       formData.delete('tags');
@@ -26,7 +25,6 @@ export const postsApi = {
 
   updatePost: (postId, formData) => {
     const token = localStorage.getItem('token');
-    // FormData에 태그 배열 추가
     if (formData.get('post[tags][]') === null && formData.get('tags')) {
       const tags = formData.get('tags');
       formData.delete('tags');
