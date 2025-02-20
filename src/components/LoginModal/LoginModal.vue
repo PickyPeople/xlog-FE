@@ -2,30 +2,30 @@
   <div v-if="isOpen" class="modal-overlay" @click="handleOverlayClick">
     <div class="modal-content"  @click.stop>
       <h2>Xlog</h2>
-      <p v-if="!correct">이메일 또는 비밀번호를 다시 확인하여주십시오</p>
+      <p v-if="!correct">メールアドレスまたはパスワードを再確認してください。</p>
       <form @submit.prevent="handleLogin">
         <div class="input-group">
-          <label for="email">이메일</label>
+          <label for="email">メールアドレス</label>
           <input 
             type="email" 
             id="email"
             v-model="email"
-            placeholder="이메일을 입력해주세요"
+            placeholder="メールアドレスを入力してください。"
             required
           />
         </div>
         <div class="input-group">
-          <label for="password">비밀번호</label>
+          <label for="password">パスワード</label>
           <input 
             type="password"
             id="password"
             v-model="password"
-            placeholder="비밀번호를 입력하세요"
+            placeholder="パスワードを入力してください。"
             required 
           />
         </div>
-        <button type="submit" class="login-btn">로그인</button>
-        <button type="button" class="register-btn">회원가입</button>
+        <button type="submit" class="login-btn">ログイン</button>
+        <button type="button" class="register-btn">新規登録</button>
       </form>
     </div>
   </div>

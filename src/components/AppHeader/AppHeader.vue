@@ -10,21 +10,21 @@
               v-model="searchKeyword"
               @keyup.enter="searchPosts"
               @keydown="handleKeyDown"
-              placeholder="검색어를 입력하세요"
+              placeholder="検索ワード"
               ref="searchInput"
             />
             <button @click="toggleSearch" class="search-icon">
-              <span v-if="!isSearchExpanded">검색</span>
-              <span v-else>닫기</span>
+              <span v-if="!isSearchExpanded">検索</span>
+              <span v-else>x</span>
             </button>
           </div>
           <div class="alarm-contianer">
-            <button class="alarm">알람</button>
+            <button class="alarm">アラーム</button>
           </div>
           <div class="button-group">
-            <button v-if="isLoggedIn" @click="navigateWrite" class="new-post">새글 작성</button>
+            <button v-if="isLoggedIn" @click="navigateWrite" class="new-post">新規投稿</button>
             <button class="login" @click="handleLoginClick">
-              {{ isLoggedIn ? "로그아웃" : "로그인" }}
+              {{ isLoggedIn ? "ログアウト" : "ログイン" }}
             </button>
           </div>
         </div>

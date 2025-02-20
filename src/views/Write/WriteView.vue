@@ -2,7 +2,7 @@
   <div>
     <main class="editor-container">
       <div class="title-input">
-        <input type="text" v-model="title" placeholder="제목을 입력하세요" class="title-field" />
+        <input type="text" v-model="title" placeholder="タイトルを入力してください" class="title-field" />
       </div>
       <div class="image-input">
         <input type="file" @change="handleImageChange" accept="image/*" class="image-field" />
@@ -18,16 +18,16 @@
           type="text"
           v-model="currentTag"
           @keyup.enter="addTag"
-          placeholder="태그를 입력후 엔터를 누르세요"
+          placeholder="タグを入力して、Enterキーを押してください"
           class="tag-input"
         />
       </div>
       <div class="editor-content">
-        <textarea v-model="content" placeholder="내용을 입력해주세요..." class="content-editor"></textarea>
+        <textarea v-model="content" placeholder="内容を入力してください…" class="content-editor"></textarea>
       </div>
       <div class="editor-footer">
-        <button class="btn-save" @click="navigateHome">뒤로가기</button>
-        <button class="btn-publish" @click="publish">출간하기</button>
+        <button class="btn-save" @click="navigateHome">戻る</button>
+        <button class="btn-publish" @click="publish">投稿する</button>
       </div>
     </main>
   </div>

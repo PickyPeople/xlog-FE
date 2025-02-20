@@ -30,7 +30,7 @@
         <div class="post-info">
           <span class="author">{{ post.username }}</span>
           <span class="date">{{ post.date }}</span>
-          <span class="likes">좋아요 {{ post.likeNum }}</span>
+          <span class="likes">いいね {{ post.likeNum }}</span>
         </div>
         <div class="content">
           {{ post.content }}
@@ -40,7 +40,7 @@
           <button @click="handleDelete" class="btn delete-btn">삭제하기</button>
         </div>
       </div>
-      <div v-else class="loading">로딩 중...</div>
+      <div v-else class="loading">読み込み中...</div>
     </main>
   </div>
 </template>

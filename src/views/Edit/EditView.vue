@@ -8,7 +8,7 @@
     />
     <main class="editor-container">
       <div class="title-input">
-        <input type="text" v-model="title" placeholder="제목을 입력하세요" class="title-field" />
+        <input type="text" v-model="title" placeholder="タイトルを入力してください" class="title-field" />
       </div>
 
       <div class="image-input">
@@ -26,18 +26,18 @@
           v-model="currentTag"
           type="text"
           class="tag-input"
-          placeholder="태그 추가"
+          placeholder="タグを入力して、Enterキーを押してください"
           @keydown.enter.prevent="addTag"
         />
       </div>
 
       <div class="editor-content">
-        <textarea v-model="content" placeholder="내용을 입력해주세요..." class="content-editor"></textarea>
+        <textarea v-model="content" placeholder="内容を入力してください…" class="content-editor"></textarea>
       </div>
 
       <div class="editor-footer">
-        <button class="btn-save" @click="editCancel">취소</button>
-        <button class="btn-publish" @click="handleUpdate">수정하기</button>
+        <button class="btn-save" @click="editCancel">キャンセル</button>
+        <button class="btn-publish" @click="handleUpdate">編集する</button>
       </div>
     </main>
   </div>

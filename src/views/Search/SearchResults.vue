@@ -1,7 +1,7 @@
 <template>
   <div class="search-results">
-    <h2 class="search-results__title">검색 결과</h2>
-    <p v-if="searchResults.length === 0" class="search-results__empty">검색 결과가 없습니다.</p>
+    <h2 class="search-results__title">検索結果</h2>
+    <p v-if="searchResults.length === 0" class="search-results__empty">検索結果がありません。</p>
     <ul v-else class="search-results__list">
       <li v-for="post in searchResults" :key="post.id" class="search-results__item">
         <router-link :to="`/posts/${post.id}`" class="search-results__link">
