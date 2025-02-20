@@ -159,12 +159,57 @@ module Api
                status: :unprocessable_entity
       end
     end
+
+    def update
+      if params[:post][:tags].present?
+        @post.tags.clear
+        
+        new_tags = params[:post][:tags].map do |tag_name|
+          Tag.find_or_create_by(name: tag_name)
+        end
+        
+        @post.tags = new_tags
+      end
+    
+      if @post.update(post_params.except(:tags))
+        render json: @post
+      else
+        render json: { error: @post.errors.full_messages }, 
+               status: :unprocessable_entity
+      end
+    end
+
+    def destroy
+      @post.destroy
+      head :no_content
+    rescue ActiveRecord::RecordNotFound
+      render json: { error: '投稿が見つかりません' }, 
+             status: :not_found
+    end
+
+    private
+
+    def set_post
+      @post = Post.find(params[:id])
+    end
+
+    def check_post_owner
+      unless @post.user_id == current_user&.id
+        render json: { error: "この操作を実行する権限がありません" }, 
+               status: :forbidden
+      end
+    end
+
+    def post_params
+      params.require(:post).permit(:title, :sub, :content, :image, tags: [])
+    end
   end
 end
 ```
 
-#### フロントエンド (WriteView)
+#### フロントエンド (投稿の作成と編集)
 ```javascript
+// WriteView.js - 投稿作成
 export default {
   name: 'WriteContent',
   setup() {
@@ -197,6 +242,78 @@ export default {
         router.push('/');
       } catch (error) {
         console.error('投稿の作成に失敗しました:', error);
+      }
+    };
+  }
+}
+
+// EditView.js - 投稿編集
+export default {
+  name: 'EditView',
+  setup() {
+    const route = useRoute();
+    const router = useRouter();
+    const title = ref('');
+    const content = ref('');
+    const tags = ref([]);
+    const image = ref(null);
+
+    const fetchPost = async () => {
+      try {
+        const response = await postsApi.getPost(route.params.id);
+        const post = response.data;
+        title.value = post.title;
+        content.value = post.content;
+        tags.value = post.tags || [];
+      } catch (error) {
+        console.error('投稿の読み込みに失敗しました:', error);
+      }
+    };
+
+    const handleUpdate = async () => {
+      try {
+        const formData = new FormData();
+        formData.append('post[title]', title.value);
+        formData.append('post[content]', content.value);
+        formData.append('post[sub]', content.value.substring(0, 100) + "...");
+        
+        if (image.value) {
+          formData.append('post[image]', image.value);
+        }
+
+        tags.value.forEach(tag => {
+          formData.append('post[tags][]', tag);
+        });
+
+        await postsApi.updatePost(route.params.id, formData);
+        router.push(`/posts/${route.params.id}`);
+      } catch (error) {
+        console.error('投稿の更新に失敗しました:', error);
+      }
+    };
+
+    onMounted(fetchPost);
+
+    return {
+      title,
+      content,
+      tags,
+      handleUpdate
+    };
+  }
+}
+
+// DetailView.js - 投稿削除
+export default {
+  setup() {
+    const handleDelete = async () => {
+      if (window.confirm('本当に削除しますか？')) {
+        try {
+          await postsApi.deletePost(post.value.id);
+          router.push('/');
+        } catch (error) {
+          console.error('投稿の削除に失敗しました:', error);
+        }
       }
     };
   }
@@ -301,6 +418,3 @@ erDiagram
    - キャッシュの適用
 2. テストコードの作成
 3. CI/CDパイプラインの構築
-
-
-
