@@ -7,6 +7,6 @@
 
 <style>
  #app {
-  height: 1000px;
+  height: auto;
  }
 </style>
