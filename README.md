@@ -29,238 +29,278 @@ Ruby on RailsとVue.jsを用いたブログプラットフォームを構築し�
  <li>デプロイ手順のドキュメント化。</li>
 </ul>
 
-# **フォルダーの仕組み**
+# Xlog - ブログプラットフォーム
 
-# **ログインとログアウト**
+Vue.jsとRuby on Railsを使用したブログプラットフォームプロジェクトです。
 
-### フロントエンドコード
+## 目次
+1. [技術スタック](#技術スタック)
+2. [主要機能](#主要機能)
+3. [プロジェクト構造](#プロジェクト構造)
+4. [機能別コード実装](#機能別コード実装)
+5. [インストールと実行方法](#インストールと実行方法)
+6. [API仕様書](#api仕様書)
 
-**1. API通信の設定**
-```javascript
- // src/api/auth.js
-import axios from 'axios';
+## 技術スタック
 
-// APIリクエストにトークンを追加するインターセプター
-axios.interceptors.request.use(
-  config => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  error => {
-    return Promise.reject(error);
-  }
-);
+### フロントエンド
+- Vue.js 3 (Composition API)
+- Vue Router
+- JWT認証
+- FormDataの処理
 
-export const authApi = {
-  login: (email, password) => {
-    return axios.post('http://localhost:3000/api/login', { email, password });
-  },
+### バックエンド
+- Ruby on Rails (APIモード)
+- Active Storage (画像処理)
+- JWT認証
+- PostgreSQL
 
-  logout: () => {
-    localStorage.removeItem('token');  
-    return axios.post('http://localhost:3000/api/logout');
-  },
+## 主要機能
 
-  me: () => {
-    return axios.get('http://localhost:3000/api/me');
-  }
-};
-```
+### 1. ユーザー管理
+- JWT基盤の認証
+- ログイン/ログアウト
+- ユーザー権限管理
+- セキュリティ処理
 
-**2. ログイン状態の管理**
-```javascript
-// src/composalbes/useAuth.js
-export function useAuth() {
-  const isLoggedIn = ref(false);
-  const isLoginModalOpen = ref(false);
-  const currentUser = ref(null);
+### 2. 投稿管理
+- CRUD (作成、読み取り、更新、削除)
+- 画像アップロード
+- タグシステム
+- 権限基盤の投稿管理
 
-  const checkAuth = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (token) {
-        const res = await authApi.me();
-        if (res.data.status === 'success') {
-          isLoggedIn.value = true;
-          currentUser.value = res.data.username || res.data.user?.username;
-          console.log('설정된 currentUser:', currentUser.value);
+### 3. 検索システム
+- 統合検索（タイトル、タグ）
+- リアルタイム検索UI
+- 検索結果ページ
+- タグベースのフィルタリング
+
+## 機能別コード実装
+
+### 1. ユーザー認証システム
+
+#### バックエンド (AuthController)
+```ruby
+module Api
+  class AuthController < ApplicationController
+    def login
+      user = User.find_by(email: params[:email])
+      
+      if user&.authenticate(params[:password])
+        token = JWT.encode(
+          { user_id: user.id, exp: 24.hours.from_now.to_i },
+          Rails.application.credentials.secret_key_base
+        )
+        render json: { 
+          status: 'success',
+          token: token,
+          user: { email: user.email }
         }
-      }
-    } catch (error) {
-      console.error('인증 확인 실패:', error);
-      localStorage.removeItem('token');
-      isLoggedIn.value = false;
-      currentUser.value = null;
-    }
-  };
-
-  const handleLoginSuccess = () => {
-    isLoggedIn.value = true;
-    isLoginModalOpen.value = false;
-    checkAuth();
-  };
-
-  const handleLogout = async () => {
-    try {
-      const response = await authApi.logout();
-      if (response.data.status === 'success') {
-        isLoggedIn.value = false;
-        currentUser.value = null; 
-      }
-    } catch (error) {
-      console.error('로그아웃 실패:', error);
-    }
-  };
-
-  return {
-    isLoggedIn,
-    isLoginModalOpen,
-    currentUser, 
-    checkAuth,
-    handleLoginSuccess,
-    handleLogout
-  };
-}
-```
-
-### バッグエンド
-
-**1. ユーザー認証システムの実装**
-```ruby
- # Gemfile
- gem 'jwt'     # JWTトークンの生成と検証
- gem 'bcrypt'  # パスワードの暗号化
-```
-
-**2. データベース設定**
-```ruby
- # Userモデルの作成
-rails generate model User email:string password_digest:string username:string
-
-# app/models/user.rb
-class User < ApplicationRecord
-  has_many :posts, dependent: :destroy  # ユーザーが削除されれば、記事も一緒に削除
-  has_secure_password # パスワードを暗号化するためのメソッドex)test1234 => 324kjdkjdas このように暗号化される。
-  validates :email, presence: true, uniqueness: true # メール有効性検査presenceはrequired、uniquenessは重複できないという意味
-  validates :username, presence: true, uniqueness: true 
-end
-```
-
-**3. APIエンドポイントの実装**
-```ruby
- # config/routes.rb
-Rails.application.routes.draw do
-  namespace :api do
-    post '/login', to: 'auth#login'
-    post '/logout', to: 'auth#logout'
-    get '/me', to: 'auth#me'
-
-  
-    resources :posts do
-      collection do
-        get 'search'
+      else
+        render json: { 
+          status: 'error', 
+          message: 'ログインに失敗しました' 
+        }, status: :unauthorized
       end
     end
   end
 end
 ```
 
-**主な機能**
- 1. 安全なユーザー認証
-    <ul>
-     <li>bcryptを使用したパスワードの暗号化</li>
-     <li>JWTによるトークンベースの認証</li>
-    </ul>
-2. 状態の維持
-    <ul>
-     <li>localStorageを使用したトークンの保存</li>
-     <li>ページ更新時もログイン状態を維持</li>
-    </ul>
-3. セキュリティ
-   <ul>
-    <li>暗号化されたパスワードの保存</li>
-    <li>トークンベースの安全な認証システム</li>
-   </ul>
-4. ユーザーエクスペリエンス
-   <ul>
-    <li>ログイン状態に応じたUI変更</li>
-    <li>自動ログイン状態確認</li>
-   </ul>
-
-# **ブログの記事 投稿、修正、削除**
-
-### フロントエンド
-
-**1. API通信設定**
+#### フロントエンド (LoginModal)
 ```javascript
-//src/api/posts.js
+export default {
+  setup(props, { emit }) {
+    const email = ref('');
+    const password = ref('');
 
- export const postsApi = {
-  getAllPosts: () => {
-    return axios.get('http://localhost:3000/api/posts');
-  },
-
-  createPost: (formData) => {
-    const token = localStorage.getItem('token');
-    if (formData.get('post[tags][]') === null && formData.get('tags')) {
-      const tags = formData.get('tags');
-      formData.delete('tags');
-      tags.forEach(tag => {
-        formData.append('post[tags][]', tag);
-      });
-    }
-
-    return axios.post('http://localhost:3000/api/posts', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': `Bearer ${token}`
+    const handleLogin = async() => {
+      try {
+        const res = await authApi.login(email.value, password.value);
+        if(res.data.status === 'success') {
+          localStorage.setItem('token', res.data.token);
+          emit('login-success');
+          emit('close-login');
+        }
+      } catch(err) {
+        console.error("エラー:", err);
+        error.value = 'ログインに失敗しました'
       }
-    });
-  },
-
-  updatePost: (postId, formData) => {
-    const token = localStorage.getItem('token');
-    if (formData.get('post[tags][]') === null && formData.get('tags')) {
-      const tags = formData.get('tags');
-      formData.delete('tags');
-      tags.forEach(tag => {
-        formData.append('post[tags][]', tag);
-      });
-    }
-
-    return axios.put(`http://localhost:3000/api/posts/${postId}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': `Bearer ${token}`
-      }
-    });
-  },
-
-  getPost: (postId) => {
-    return axios.get(`http://localhost:3000/api/posts/${postId}`);
-  },
-
-  deletePost: (postId) => {
-    const token = localStorage.getItem('token');
-    return axios.delete(`http://localhost:3000/api/posts/${postId}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-  },
-
-  searchPosts: (keyword) => {
-    return axios.get(`http://localhost:3000/api/posts/search?keyword=${encodeURIComponent(keyword)}`);
+    };
   }
-};
+}
 ```
 
-**2. 投稿作成コンポーネント**iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii____________
-iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+### 2. 投稿CRUD
 
+#### バックエンド (PostsController)
+```ruby
+module Api
+  class PostsController < ApplicationController
+    before_action :authenticate_user, only: [:create, :update, :destroy]
+    before_action :set_post, only: [:show, :update, :destroy]
+    before_action :check_post_owner, only: [:update, :destroy]
+ 
+    def create
+      @post = Post.new(post_params.except(:tags))
+      @post.user = current_user
+      @post.date = Date.today
+      
+      if @post.save
+        if params[:post][:tags].present?
+          params[:post][:tags].each do |tag_name|
+            tag = Tag.find_or_create_by(name: tag_name)
+            @post.tags << tag
+          end
+        end
+        render json: @post, status: :created
+      else
+        render json: { error: @post.errors.full_messages }, 
+               status: :unprocessable_entity
+      end
+    end
+  end
+end
+```
+
+#### フロントエンド (WriteView)
+```javascript
+export default {
+  name: 'WriteContent',
+  setup() {
+    const title = ref('');
+    const content = ref('');
+    const tags = ref([]);
+    const image = ref(null);
+
+    const publish = async () => {
+      try {
+        const formData = new FormData();
+        formData.append('post[title]', title.value);
+        formData.append('post[content]', content.value);
+        
+        const sub = content.value.length > 100 
+          ? content.value.substring(0, 100) + "..."
+          : content.value;
+        
+        formData.append('post[sub]', sub);
+        
+        if (image.value) {
+          formData.append('post[image]', image.value);
+        }
+
+        tags.value.forEach(tag => {
+          formData.append('post[tags][]', tag);
+        });
+    
+        await postsApi.createPost(formData);
+        router.push('/');
+      } catch (error) {
+        console.error('投稿の作成に失敗しました:', error);
+      }
+    };
+  }
+}
+```
+
+### 3. 検索システム
+
+#### バックエンド (検索ロジック)
+```ruby
+def search
+  keyword = params[:keyword]
+  @posts = Post.joins(:tags)
+               .where("posts.title LIKE ? OR tags.name LIKE ?", 
+                     "%#{keyword}%", "%#{keyword}%")
+               .distinct
+  render json: @posts
+end
+```
+
+#### フロントエンド (検索実装)
+```javascript
+export default {
+  setup(props, { emit }) {
+    const searchKeyword = ref('');
+    const isSearchExpanded = ref(false);
+
+    const searchPosts = () => {
+      if (searchKeyword.value.trim() !== '') {
+        router.push(`/search?keyword=${encodeURIComponent(searchKeyword.value)}`);
+        searchKeyword.value = '';
+        isSearchExpanded.value = false;
+      }
+    };
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && isSearchExpanded.value) {
+        isSearchExpanded.value = false;
+        searchKeyword.value = '';
+      }
+    };
+  }
+}
+```
+
+## データベース構造
+
+```mermaid
+erDiagram
+    User ||--o{ Post : "has many"
+    Post ||--o{ PostTag : "has many"
+    Tag ||--o{ PostTag : "has many"
+    Post ||--o| Image : "has one"
+
+    User {
+        string username
+        string email
+        string password_digest
+    }
+
+    Post {
+        string title
+        string content
+        string sub
+        datetime created_at
+        datetime updated_at
+        bigint user_id
+    }
+
+    Tag {
+        string name
+        datetime created_at
+        datetime updated_at
+    }
+
+    PostTag {
+        bigint post_id
+        bigint tag_id
+    }
+```
+
+## コードレビューポイント
+
+### 1. セキュリティ
+- [x] ユーザー認証の実装
+- [x] 権限チェックの実装
+- [x] JWTトークン管理
+
+### 2. パフォーマンス
+- [x] 画像処理の最適化
+- [x] 検索クエリの最適化
+- [ ] N+1クエリ問題の解決が必要
+
+### 3. ユーザー体験
+- [x] 検索UI/UX
+- [x] レスポンシブデザイン
+- [x] エラー処理とフィードバック
+
+## 今後の改善点
+1. 検索パフォーマンスの最適化
+   - 全文検索エンジンの導入検討
+   - キャッシュの適用
+2. テストコードの作成
+3. CI/CDパイプラインの構築
 
 
 
