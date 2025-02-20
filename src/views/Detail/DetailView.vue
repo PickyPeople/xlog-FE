@@ -30,14 +30,14 @@
         <div class="post-info">
           <span class="author">{{ post.username }}</span>
           <span class="date">{{ post.date }}</span>
-          <span class="likes">いいね {{ post.likeNum }}</span>
+          <span class="likes"> ❤️{{ post.likeNum }}</span>
         </div>
         <div class="content">
           {{ post.content }}
         </div>
         <div  v-if="isAuthor" class="button-container">
-          <button @click="handleEdit" class="btn edit-btn">수정하기</button>
-          <button @click="handleDelete" class="btn delete-btn">삭제하기</button>
+          <button @click="handleEdit" class="btn edit-btn">修正する</button>
+          <button @click="handleDelete" class="btn delete-btn">削除する</button>
         </div>
       </div>
       <div v-else class="loading">読み込み中...</div>

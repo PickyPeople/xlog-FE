@@ -25,7 +25,7 @@
               <div class="post-footer">
                 <p class="post-user">{{ post.username }}</p>
                 <p class="post-date">{{ post.date }}</p>
-                <img src="../../../images/heart.svg" alt="" class="heart">
+                <div alt="" class="heart">❤️</div>
                 <p class="like">{{ post.likeNum }}</p>
               </div>
             </div>
