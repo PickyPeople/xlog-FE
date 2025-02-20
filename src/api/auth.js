@@ -19,11 +19,10 @@ export const authApi = {
   },
 
   logout: () => {
-    localStorage.removeItem('token');  // 로그아웃 시 토큰 삭제
+    localStorage.removeItem('token');  
     return axios.post('http://localhost:3000/api/logout');
   },
 
-  // 현재 로그인된 사용자 정보 확인
   me: () => {
     return axios.get('http://localhost:3000/api/me');
   }

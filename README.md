@@ -31,139 +31,235 @@ Ruby on RailsとVue.jsを用いたブログプラットフォームを構築し�
 
 # **フォルダーの仕組み**
 
-# **ログインモダル作り**
-### AppHeader.vue
-```html
- <button 
-  class="login" 
-  @click="handleLoginClick"
->
-  {{ isLoggedIn ? 'ログアウト' : 'ログイン' }}
-</button>
-```
-### AppHeaderScript.js
+# **ログインとログアウト**
+
+### フロントエンドコード
+
+**1. API通信の設定**
 ```javascript
-const handleLoginClick = () => {
-       if (props.isLoggedIn) {
-         emit('logout');
-       } else {
-         emit('open-login');
-       }
-     };
-```
-### HomeView.vue
-```html
- <AppHeader 
-  :is-logged-in="isLoggedIn"
-  @open-login="isLoginModalOpen = true"
-  @logout="handleLogout"
-/>
-<LoginModal
-  :is-open="isLoginModalOpen"
-  @close-login="isLoginModalOpen = false"
-  @login-success="handleLoginSuccess"
-/>
-```
-### LoginModal.vueの一部分
-```html
- <div v-if="isOpen" class="modal-overlay" @click="handleOverlayClick">
-```
+ // src/api/auth.js
+import axios from 'axios';
 
-1. isLoggedInの状態によってemit関数で親のcomponentである、HomeView.vueに知らせます。
-1. AppHeaderScriptでもらった、'open-login'をAppHeaderっていうcomponentでisLoginModalOpenをtrueに変えます。  
-1. HomeView.vueでLoginModalというcomponentが、is-openの状態をisLoginModalOpenで管理してるため、LoginModalにv-ifを使い、LoginModalが開けます。
-
-# **ログインとログアウト通信**
-### auth.js
-``` javascript
-import axios from 'axios'
-
-const API_URL = 'http://localhost:3000/api'
+// APIリクエストにトークンを追加するインターセプター
+axios.interceptors.request.use(
+  config => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  error => {
+    return Promise.reject(error);
+  }
+);
 
 export const authApi = {
-  login(email, password) {
-    return axios.post(`${API_URL}/login`, {
-      email: email,
-      password: password
-    })
+  login: (email, password) => {
+    return axios.post('http://localhost:3000/api/login', { email, password });
   },
 
-  logout() {
-    return axios.post(`${API_URL}/logout`)
+  logout: () => {
+    localStorage.removeItem('token');  
+    return axios.post('http://localhost:3000/api/logout');
+  },
+
+  me: () => {
+    return axios.get('http://localhost:3000/api/me');
   }
+};
+```
+
+**2. ログイン状態の管理**
+```javascript
+// src/composalbes/useAuth.js
+export function useAuth() {
+  const isLoggedIn = ref(false);
+  const isLoginModalOpen = ref(false);
+  const currentUser = ref(null);
+
+  const checkAuth = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const res = await authApi.me();
+        if (res.data.status === 'success') {
+          isLoggedIn.value = true;
+          currentUser.value = res.data.username || res.data.user?.username;
+          console.log('설정된 currentUser:', currentUser.value);
+        }
+      }
+    } catch (error) {
+      console.error('인증 확인 실패:', error);
+      localStorage.removeItem('token');
+      isLoggedIn.value = false;
+      currentUser.value = null;
+    }
+  };
+
+  const handleLoginSuccess = () => {
+    isLoggedIn.value = true;
+    isLoginModalOpen.value = false;
+    checkAuth();
+  };
+
+  const handleLogout = async () => {
+    try {
+      const response = await authApi.logout();
+      if (response.data.status === 'success') {
+        isLoggedIn.value = false;
+        currentUser.value = null; 
+      }
+    } catch (error) {
+      console.error('로그아웃 실패:', error);
+    }
+  };
+
+  return {
+    isLoggedIn,
+    isLoginModalOpen,
+    currentUser, 
+    checkAuth,
+    handleLoginSuccess,
+    handleLogout
+  };
 }
 ```
-### LoginModal.vue
-``` html
-  <form @submit.prevent="handleLogin">
-        <div class="input-group">
-          <label for="email">e-mail</label>
-          <input 
-            type="email" 
-            id="email"
-            v-model="email"
-            placeholder="e-mailを入力してください"
-            required
-          />
-        </div>
-        <div class="input-group">
-          <label for="password">パスワド</label>
-          <input 
-            type="password"
-            id="password"
-            v-model="password"
-            placeholder="パスワードを入力してください"
-            required 
-          />
-        </div>
-        <button type="submit" class="login-btn">로그인</button>
-        <button type="button" class="register-btn">회원가입</button>
-      </form>
+
+### バッグエンド
+
+**1. ユーザー認証システムの実装**
+```ruby
+ # Gemfile
+ gem 'jwt'     # JWTトークンの生成と検証
+ gem 'bcrypt'  # パスワードの暗号化
 ```
-### LoginModal.js
-``` javascript
- const handleLogin = async() => {
-      try{
-        const res = await authApi.login(email.value, password.value);
-        if(res.data.status == 'success') {
-          emit('login-success');
-          emit('close-login');
-        }
-      } catch(err) {
-        console.error("Login error:", err);
-        error.value = 'failed login'
-        correct.value = false;
-      }
-    }
+
+**2. データベース設定**
+```ruby
+ # Userモデルの作成
+rails generate model User email:string password_digest:string username:string
+
+# app/models/user.rb
+class User < ApplicationRecord
+  has_many :posts, dependent: :destroy  # ユーザーが削除されれば、記事も一緒に削除
+  has_secure_password # パスワードを暗号化するためのメソッドex)test1234 => 324kjdkjdas このように暗号化される。
+  validates :email, presence: true, uniqueness: true # メール有効性検査presenceはrequired、uniquenessは重複できないという意味
+  validates :username, presence: true, uniqueness: true 
+end
 ```
-### HomeView.jsの一部分
+
+**3. APIエンドポイントの実装**
+```ruby
+ # config/routes.rb
+Rails.application.routes.draw do
+  namespace :api do
+    post '/login', to: 'auth#login'
+    post '/logout', to: 'auth#logout'
+    get '/me', to: 'auth#me'
+
+  
+    resources :posts do
+      collection do
+        get 'search'
+      end
+    end
+  end
+end
+```
+
+**主な機能**
+ 1. 安全なユーザー認証
+    <ul>
+     <li>bcryptを使用したパスワードの暗号化</li>
+     <li>JWTによるトークンベースの認証</li>
+    </ul>
+2. 状態の維持
+    <ul>
+     <li>localStorageを使用したトークンの保存</li>
+     <li>ページ更新時もログイン状態を維持</li>
+    </ul>
+3. セキュリティ
+   <ul>
+    <li>暗号化されたパスワードの保存</li>
+    <li>トークンベースの安全な認証システム</li>
+   </ul>
+4. ユーザーエクスペリエンス
+   <ul>
+    <li>ログイン状態に応じたUI変更</li>
+    <li>自動ログイン状態確認</li>
+   </ul>
+
+# **ブログの記事 投稿、修正、削除**
+
+### フロントエンド
+
+**1. API通信設定**
 ```javascript
-const handleLoginSuccess = () => {
-      isLoggedIn.value = true; 
-      isLoginModalOpen.value = false;
-    };
+//src/api/posts.js
 
-const handleLogout = async () => {
-      try {
-        const response = await authApi.logout();
-        
-        if (response.data.status === 'success') {
-          isLoggedIn.value = false;
-        }
-      } catch (error) {
-        console.error('로그아웃 실패:', error);
+ export const postsApi = {
+  getAllPosts: () => {
+    return axios.get('http://localhost:3000/api/posts');
+  },
+
+  createPost: (formData) => {
+    const token = localStorage.getItem('token');
+    if (formData.get('post[tags][]') === null && formData.get('tags')) {
+      const tags = formData.get('tags');
+      formData.delete('tags');
+      tags.forEach(tag => {
+        formData.append('post[tags][]', tag);
+      });
+    }
+
+    return axios.post('http://localhost:3000/api/posts', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${token}`
       }
-    };
+    });
+  },
+
+  updatePost: (postId, formData) => {
+    const token = localStorage.getItem('token');
+    if (formData.get('post[tags][]') === null && formData.get('tags')) {
+      const tags = formData.get('tags');
+      formData.delete('tags');
+      tags.forEach(tag => {
+        formData.append('post[tags][]', tag);
+      });
+    }
+
+    return axios.put(`http://localhost:3000/api/posts/${postId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  },
+
+  getPost: (postId) => {
+    return axios.get(`http://localhost:3000/api/posts/${postId}`);
+  },
+
+  deletePost: (postId) => {
+    const token = localStorage.getItem('token');
+    return axios.delete(`http://localhost:3000/api/posts/${postId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  },
+
+  searchPosts: (keyword) => {
+    return axios.get(`http://localhost:3000/api/posts/search?keyword=${encodeURIComponent(keyword)}`);
+  }
+};
 ```
 
-1. LoginModal.vueでログインのボートンを押せば、formタグによって、LoginModal.jsのhandlelogin関数によって、auth.jsのauthApiのlogin関数を通じてe-mailとパスワードの確認をします。
-2. e-mailとパスワードがあってた場合、親のcomponentにlogin-successとclose-loginを伝えます。
-3. HomeView.vueのAppHeader componentにはis-logged-inにtureを渡し、LoginModalのisLoginModalOpenをfalseに交わし、ログインモダルを閉じます。
-4. AppHeader.vueはisLoggedInの状態によって、UIがログインからログアウトに変わります。
-5. ログアウトを押したら、AppHeaderScript.jsにある、handleLoginClick関数によって、emit('logout')関数が実行されます。
-6. HomeView.vueではlogoutをもらい、HomeView.jsのhandleLogout関数が実行されます。
-7. それによって、 auth.jsのauthApiのlogout関数が実行されます。
-
+**2. 投稿作成コンポーネント**iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii____________
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
 
 
 
