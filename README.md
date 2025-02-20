@@ -413,7 +413,7 @@ def search
   @posts = Post.joins(:tags)
                .where("posts.title LIKE ? OR tags.name LIKE ?", 
                      "%#{keyword}%", "%#{keyword}%")
-               .distinct
+               
   render json: @posts
 end
 ```
